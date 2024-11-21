@@ -1,25 +1,43 @@
 const fs = require("node:fs");
 
-function csvToJSON(csv) {
-  let lines = csv.split("\n");
+function getCurrencyRegion(dates) {
+  return dates.split(",").slice(1);
+}
 
-  let result = [];
-  let headers = lines[0].split(",");
+function transformData(currency, values) {
+  const currencies = getCurrencyRegion(currency);
 
-  for (let i = 1; i < lines.length; i++) {
-    let currentLine = lines[i].split(",");
-    let date = currentLine[0];
-    let obj = { date: date, data: {} };
+  const result = [];
 
-    for (let j = 1; j < headers.length; j++) {
-      obj.data[headers[j]] = currentLine[j];
-    }
+  let obj = {};
+  values.forEach((data) => {
+    const perDay = data.split(",");
 
-    result.push(obj);
-  }
+    let [date, ...valuesPerDay] = perDay;
+
+    const res = perDay.map((item, i) => {
+      if (currencies[i] === undefined || currencies[i] === "") return;
+
+      obj = { [currencies[i]]: valuesPerDay[i] };
+      return obj;
+    });
+
+    result.push({ [date]: res });
+  });
 
   return result;
 }
+
+function csvToJSON(csvData) {
+  const lines = csvData.split("\n");
+
+  let [currency, ...values] = lines;
+
+  const result = transformData(currency, values);
+
+  return result;
+}
+
 async function fetchCvsData(filepath) {
   try {
     const res = fs.readFileSync(filepath, "utf8");
