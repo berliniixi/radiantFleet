@@ -15,12 +15,13 @@ function transformData(currency, values) {
 
     let [date, ...valuesPerDay] = perDay;
 
-    const res = perDay.map((item, i) => {
-      if (currencies[i] === undefined || currencies[i] === "") return;
+    const res = perDay
+      .map((_, i) => {
+        if (currencies[i] === undefined || currencies[i] === "") return null;
 
-      obj = { [currencies[i]]: valuesPerDay[i] };
-      return obj;
-    });
+        return { [currencies[i]]: valuesPerDay[i] };
+      })
+      .filter((item) => item !== null);
 
     result.push({ [date]: res });
   });
@@ -41,7 +42,6 @@ function csvToJSON(csvData) {
 async function fetchCvsData(filepath) {
   try {
     const res = fs.readFileSync(filepath, "utf8");
-    console.log(res);
 
     const data = csvToJSON(res);
 
