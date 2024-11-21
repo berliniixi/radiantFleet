@@ -16,7 +16,7 @@ const dataRoute = require("./routes/data");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.use("/api/v1/data", dataRoute);
+app.use("/api/v1", dataRoute);
 
 const port = process.env.PORT || 3000;
 

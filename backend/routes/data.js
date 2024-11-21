@@ -3,5 +3,5 @@ const router = express.Router();
 
 const getData = require("../controllers/data");
 
-router.get("", getData);
+router.get("/data", getData);
 module.exports = router;
