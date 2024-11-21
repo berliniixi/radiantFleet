@@ -4,7 +4,8 @@ function getDataByDay(data, day) {
       return item[day];
     }
   }
-  return null;
+
+  return {};
 }
 
 module.exports = getDataByDay;
